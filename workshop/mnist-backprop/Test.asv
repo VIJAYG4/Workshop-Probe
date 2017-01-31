@@ -1,0 +1,72 @@
+%Testing MNIST Database
+% Load validation set.
+    load Train.mat
+    
+    inputValues = loadMNISTImages('t10k-images.idx3-ubyte');
+    labels = loadMNISTLabels('t10k-labels.idx1-ubyte');
+    
+    activationFunction=@logisticSigmoid;
+    % Choose decision rule.
+    fprintf('Validation:\n');
+    
+    [correctlyClassified, classificationErrors] = validateTwoLayerPerceptron(activationFunction, hiddenWeights, outputWeights, inputValues, labels);
+    
+    fprintf('Classification errors: %d\n', classificationErrors);
+    fprintf('Correctly classified: %d\n', correctlyClassified);
+    
+    TestDatabasePath='E:\pss projects\matlab-mnist-two-layer-perceptron-master back propogation\MNISTTestImages\';
+              
+        label=inputdlg('Enter the ID no.:','Label');
+        label=str2double(label);
+        rt=int2str(label);
+        expectimage=strcat('E:\pss projects\matlab-mnist-two-layer-perceptron-master back propogation\MNISTTestImages\',rt,'-01.jpg');
+        imshow(expectimage);
+        test=inputdlg('Enter the test image:','Test');
+        dlg_title='Test';
+        test=str2double(test);
+         im=strcat('E:\pss projects\matlab-mnist-two-layer-perceptron-master back propogation\MNISTTestImages\',int2str(test),'-01.jpg');
+        SelectedImage=imread(im);
+        imshow(SelectedImage);
+        
+        
+        TestDatabasePath=strcat(TestDatabasePath,int2str(test),'-0');
+        test_x=[];
+        sk=int2str(1);
+        str=strcat(TestDatabasePath,sk,'.jpg');
+    
+        img = imread(str);
+        img = reshape(img, 28, 28, 1);
+        img = permute(img,[2 1 3]);
+
+        %imshow(img);
+        %img = rgb2gray(img);
+        
+        %test_x = double(reshape(test_x,28,28,2 ))/255;
+        test_y=zeros(10,1);
+        test_y(label+1,1)=1;
+        %test_y(2,rt)=1;
+        
+
+        [correctlyClassified, classificationErrors] = validateTwoLayerPerceptron(activationFunction, hiddenWeights, outputWeights, test_x, test_y);
+        disp(correctlyClassified);
+ if(correctlyClassified==1)
+    disp('YES');
+end
+if(correctlyClassified==0)
+    disp('NO');
+end
+
+subplot(121),imshow(SelectedImage);
+title('Test Image');
+if(correctlyClassified==1)
+    text(100,600,'ACCESS GRANTED','Color','green','FontSize',35);
+end
+if(correctlyClassified==0)
+    text(100,600,'ACCESS DENIED','Color','red','FontSize',35);
+end
+subplot(122);
+imshow(expectimage);
+title('Expected Image');
+
+        
+    
